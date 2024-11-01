@@ -4,6 +4,8 @@ const { body, validationResult } = require("express-validator");
 
 const alphaErr = "must only contain letters.";
 const lengthErr = "must be between 1 and 10 characters.";
+const emailErr = "is not a valid"
+const ageErr = "must be between 18-120 years old"
 
 const validateUser = [
   body("firstName").trim()
@@ -12,6 +14,12 @@ const validateUser = [
   body("lastName").trim()
     .isAlpha().withMessage(`Last name ${alphaErr}`)
     .isLength({ min: 1, max: 10 }).withMessage(`Last name ${lengthErr}`),
+  body("email").trim()
+    .isEmail().withMessage(`Email ${emailErr}`),
+  body("age").trim()
+    .isInt({min:18,max:120}).withMessage(`Age ${ageErr}`),
+  body("bio").trim()
+    .isLength({max:200}).withMessage('Bio must be less than 200')
 ];
 
 
@@ -40,8 +48,8 @@ exports.usersCreatePost = [
         errors: errors.array(),
       });
     }
-    const { firstName, lastName } = req.body;
-    usersStorage.addUser({ firstName, lastName });
+    const { firstName, lastName,email,age,bio } = req.body;
+    usersStorage.addUser({ firstName, lastName,email,age,bio });
     res.redirect("/");
   }
 ];
@@ -79,3 +87,23 @@ exports.usersDeletePost = (req, res) => {
   res.redirect("/");
 };
 
+exports.usersSearchAccount = (req,res)=>{
+  // Extract the search query from the request
+  const searchQuery = req.query.user;
+
+  // Check if the search query is provided
+  if (!searchQuery) {
+      return res.render('index', { title: 'Search result', users: [], message: 'Please provide a user name to search.' });
+  }
+
+  // Retrieve the user by first name
+  const result = usersStorage.getUserByName(searchQuery);
+
+  // Check if a user was found
+  if (!result) {
+      return res.render('index', { title: 'Search result', users: [], message: 'No user found with that name.' });
+  }
+
+  // Render the index page with the search result
+  res.render('index', { title: 'Search result', users: [result] }); // Wrap in an array for consistency
+}

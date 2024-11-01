@@ -1,6 +1,7 @@
 <!-- views/partials/errors.ejs -->
+<link rel="stylesheet" href="styles.css" />
 <% if (locals.errors) {%>
-<ul>
+<ul id="errors">
   <% errors.forEach(function(error) { %>
   <li><%= error.msg %></li>
   <% }); %>

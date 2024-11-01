@@ -7,7 +7,11 @@
   <body>
     <h1><%= title %></h1>
     <%- include("partials/errors.ejs") %>
-    <form action="/<%= user.id %>/update" method="POST">
+    <form
+      action="/<%= user.id %>/update"
+      method="POST"
+      onsubmit="return false;"
+    >
       <input
         type="text"
         name="firstName"
@@ -20,6 +24,12 @@
         value="<%= user.lastName %>"
         required
       />
+      <label for="email">Email: </label>
+      <input type="text" name="email" value="<%= user.email %>" id="email" />
+      <label for="age">Age : </label>
+      <input type="text" name="age" value="<%= user.age %>" id="age" />
+      <label for="bio">Bio : </label>
+      <input type="text" name="bio" value="<%= user.bio %>" id="bio" required />
       <button type="submit">Update User</button>
     </form>
     <a href="/">Back to home</a>
